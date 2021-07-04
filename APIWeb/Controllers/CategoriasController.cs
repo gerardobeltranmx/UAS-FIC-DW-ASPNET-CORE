@@ -18,7 +18,7 @@ namespace APIWeb.Controllers
         [HttpGet("Todos")]
         public ActionResult Todos()
         {
-
+            // vser
             try
             {
                 List<ViewModelCategoriaId> lista = new List<ViewModelCategoriaId>();
