@@ -3,7 +3,7 @@ using APIWeb.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace APIWeb.Helpers
-{
+{// comentario
     public class Datos : DbContext
     {
         public DbSet<Categoria> Categorias { get; set; } // tabla categoria la base de datos
