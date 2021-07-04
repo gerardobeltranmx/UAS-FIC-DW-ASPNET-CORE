@@ -6,7 +6,7 @@ namespace APIWeb.Helpers
         public bool Estado { get; set; }
         public string Mensaje { get; set; }
         public object Info { get; set; }
-
+        // Respuestas
         public Respuesta()
         {
             this.Estado = true;
