@@ -11,7 +11,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 namespace APIWeb
-{
+{//ver
+
     public class Startup
     {
         public Startup(IConfiguration configuration)
