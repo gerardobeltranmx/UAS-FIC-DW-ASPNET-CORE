@@ -3,10 +3,12 @@ using APIWeb.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace APIWeb.Helpers
-{// comentario
+{
     public class Datos : DbContext
     {
-        public DbSet<Categoria> Categorias { get; set; } // tabla categoria la base de datos
+        public DbSet<Categoria> Categorias { get; set; } // tabla categorias la base de datos
+        public DbSet<Producto> Productos { get; set; } // tabla productos la base de datos
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             string Conexion = @"Server = surtidor.database.windows.net;
