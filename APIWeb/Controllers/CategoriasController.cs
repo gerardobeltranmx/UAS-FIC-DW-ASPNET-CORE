@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using APIWeb.Helpers;
 using APIWeb.Models;
 using APIWeb.ViewModels;
@@ -79,10 +80,20 @@ namespace APIWeb.Controllers
         {
             try
             {
-                Categoria nueva = new Categoria(c);
-                db.Categorias.Add(nueva);
-                db.SaveChanges();
-                Resultado.Info = new CategoriaIdViewModel(nueva);
+                if (ModelState.IsValid)
+                {
+                    Categoria nueva = new Categoria(c);
+                    db.Categorias.Add(nueva);
+                    db.SaveChanges();
+                    Resultado.Info = new CategoriaIdViewModel(nueva);
+                }
+                else
+                {
+                    Resultado.Estado = false;
+                    string MensajeError = "";
+                    MensajeError = ModelState.Values.First().Errors[0].ErrorMessage;
+                    Resultado.Mensaje = MensajeError; ;
+                }
             }
            
             catch (Exception)
