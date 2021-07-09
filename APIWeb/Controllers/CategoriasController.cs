@@ -91,8 +91,15 @@ namespace APIWeb.Controllers
                 {
                     Resultado.Estado = false;
                     string MensajeError = "";
-                    MensajeError = ModelState.Values.First().Errors[0].ErrorMessage;
-                    Resultado.Mensaje = MensajeError; ;
+
+                    foreach(var valor in ModelState.Values)
+                    {
+                        MensajeError+= valor.Errors[0].ErrorMessage;
+                        MensajeError += " | ";
+                    }
+                    // MensajeError = ModelState.Values.First().Errors[0].ErrorMessage;
+
+                    Resultado.Mensaje =  MensajeError; ;
                 }
             }
            
