@@ -11,7 +11,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 namespace APIWeb
-{//ver  dfgdfg fsdfds
+{
 
     public class Startup
     {
