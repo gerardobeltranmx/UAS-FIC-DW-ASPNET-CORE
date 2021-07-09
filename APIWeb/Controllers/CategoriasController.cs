@@ -21,10 +21,10 @@ namespace APIWeb.Controllers
             // vser
             try
             {
-                List<ViewModelCategoriaId> lista = new List<ViewModelCategoriaId>();
+                List<CategoriaIdViewModel> lista = new List<CategoriaIdViewModel>();
 
                 foreach (Categoria c in db.Categorias)
-                    lista.Add(new ViewModelCategoriaId(c));
+                    lista.Add(new CategoriaIdViewModel(c));
 
                 if (lista.Count == 0)
                     throw new CategoriaException("Son muy pocas categorias");
@@ -55,7 +55,7 @@ namespace APIWeb.Controllers
             {
                 BuscarCategoria = db.Categorias.Find(id);
                 if (BuscarCategoria != null)
-                    Resultado.Info = new ViewModelCategoriaId(BuscarCategoria);
+                    Resultado.Info = new CategoriaIdViewModel(BuscarCategoria);
                 else
                     throw new CategoriaException("Categoria no encontrada");
             }
@@ -75,14 +75,14 @@ namespace APIWeb.Controllers
 
         // POST api/Categorias/Nueva
         [HttpPost("Nueva")]
-        public ActionResult Nueva([FromBody] ViewModelCategoria c)
+        public ActionResult Nueva([FromBody] CategoriaViewModel c)
         {
             try
             {
                 Categoria nueva = new Categoria(c);
                 db.Categorias.Add(nueva);
                 db.SaveChanges();
-                Resultado.Info = new ViewModelCategoriaId(nueva);
+                Resultado.Info = new CategoriaIdViewModel(nueva);
             }
            
             catch (Exception)
@@ -95,7 +95,7 @@ namespace APIWeb.Controllers
 
         // PUT api/values/5
         [HttpPut("Actualizar/{id}")]
-        public ActionResult Actualizar(int id, [FromBody] ViewModelCategoria c)
+        public ActionResult Actualizar(int id, [FromBody] CategoriaViewModel c)
         {
 
             try
@@ -107,7 +107,7 @@ namespace APIWeb.Controllers
                     BuscarCategoria.nombre = c.nombre;
                     BuscarCategoria.descripcion = c.descripcion;
                     db.SaveChanges();
-                    Resultado.Info= new ViewModelCategoriaId(BuscarCategoria);
+                    Resultado.Info= new CategoriaIdViewModel(BuscarCategoria);
 
                 }
                 else
@@ -143,7 +143,7 @@ namespace APIWeb.Controllers
                     BuscarCategoria.activo = false;
                     db.SaveChanges();
                     Resultado.Info=new
-                            ViewModelCategoriaId (BuscarCategoria);
+                            CategoriaIdViewModel(BuscarCategoria);
 
                 }
                 else

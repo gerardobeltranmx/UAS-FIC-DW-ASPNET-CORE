@@ -20,7 +20,7 @@ namespace APIWeb.Models
             this.descripcion = descripcion;
             this.activo = activo;
         }
-        public Categoria(ViewModelCategoria c)
+        public Categoria(CategoriaViewModel c)
         {
             this.nombre = c.nombre;
             this.descripcion = c.descripcion;
