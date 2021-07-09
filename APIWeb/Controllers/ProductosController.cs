@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using APIWeb.Helpers;
+using APIWeb.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,9 +21,22 @@ namespace APIWeb.Controllers
             Datos db = new Datos();
             Respuesta Resultado = new Respuesta();
 
-            var prod = db.Productos.Include(c => c.categoria); 
+            var prod = db.Productos.Include(c => c.categoria);
 
-            Resultado.Info = prod;
+            var lista = prod.Select(p => new ProductoTodosViewModel
+                {
+                    id = p.id,
+                    nombre = p.nombre,
+                    codigo = p.codigo,
+                    descripcion = p.descripcion,
+                    existencia = p.existencia,
+                    idcategoria = p.idcategoria,
+                    nombre_categoria = p.categoria.nombre
+                }
+              );
+
+
+            Resultado.Info = lista;
 
             return Ok(Resultado);
 
