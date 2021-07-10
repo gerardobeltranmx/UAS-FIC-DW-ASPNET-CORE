@@ -4,7 +4,7 @@ namespace APIWeb.Models
     public class Usuario
     {
 
-        public int idusuario { get; set; }
+        public int id { get; set; }
         public int idrol { get; set; }
         public string nombre { get; set; }
         public string direccion { get; set; }
