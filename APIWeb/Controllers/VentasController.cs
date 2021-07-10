@@ -20,6 +20,8 @@ namespace APIWeb.Controllers
             Respuesta Resultado = new Respuesta();
             Datos db = new Datos();
             var ventas = from v in db.Ventas
+                         join dv in db.Ventas_Detalles
+                           on v.id equals dv.idventa
                          select new
                          {
                              v.id,
@@ -27,7 +29,8 @@ namespace APIWeb.Controllers
                              v.idusuario,
                              v.num_factura,
                              v.impuesto,
-                             v.total
+                             v.total,
+                             detalles = dv
                          };
             Resultado.Info = ventas;
 
@@ -47,7 +50,7 @@ namespace APIWeb.Controllers
             public ActionResult Nueva([FromBody] VentaNuevaViewModel v)
         {
             Datos db = new Datos();
-            var venta = new Venta
+            var venta = new Venta()
             {
                 idcliente = v.idcliente,
                 idusuario = v.idusuario,
@@ -64,7 +67,7 @@ namespace APIWeb.Controllers
             
             foreach (var d in v.detalles)
             {
-                var detalle = new Venta_Detalle
+                var detalle = new Venta_Detalle()
                 {
                     idproducto = d.idproducto,
                     idventa = venta.id,
