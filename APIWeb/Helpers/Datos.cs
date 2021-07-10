@@ -8,6 +8,7 @@ namespace APIWeb.Helpers
     {
         public DbSet<Categoria> Categorias { get; set; } // tabla categorias la base de datos
         public DbSet<Producto> Productos { get; set; } // tabla productos la base de datos
+        public DbSet<Cliente> Clientes { get; set; } // tabla productos la base de datos
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
