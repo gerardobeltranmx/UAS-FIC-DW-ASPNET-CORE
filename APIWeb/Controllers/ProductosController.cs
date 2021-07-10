@@ -21,7 +21,7 @@ namespace APIWeb.Controllers
             Datos db = new Datos();
             Respuesta Resultado = new Respuesta();
 
-            var prod = db.Productos.Include(c => c.categoria);
+            var prod = db.Productos;// .Include(c => c.categoria);
 
             var lista = prod.Select(p => new ProductoTodosViewModel
                 {
@@ -31,7 +31,7 @@ namespace APIWeb.Controllers
                     descripcion = p.descripcion,
                     existencia = p.existencia,
                     idcategoria = p.idcategoria,
-                    nombre_categoria = p.categoria.nombre
+                    //nombre_categoria = p.categoria.nombre
                 }
               );
 
@@ -42,12 +42,67 @@ namespace APIWeb.Controllers
 
          }
 
+
+        [HttpGet("[action]")]
+        public ActionResult Todos2()
+        {
+            Datos db = new Datos();
+            Respuesta Resultado = new Respuesta();
+
+
+            var prod = (from p in db.Productos
+                        join c in db.Categorias on p.idcategoria equals c.id
+                        orderby p.nombre ascending
+                        select new
+                        {
+                            p.codigo,
+                            p.nombre,
+                            p.descripcion,
+                            p.existencia,
+                            p.precio_venta,
+                            p.idcategoria,
+                            nombre_categoria = c.nombre
+                        }) ; 
+          
+
+            Resultado.Info = prod;
+
+            return Ok(Resultado);
+
+        }
+
+
+
         // GET api/values/5
         [HttpGet("{id}")]
         public string Get(int id)
         {
             return "value";
         }
+
+        // GET api/values/5
+        [HttpGet("[action]/{nombre}")]
+        public ActionResult BuscarNombre(string nombre)
+        {
+            Respuesta Resultado = new Respuesta();
+
+            Datos db = new Datos();
+
+            var BuscarProducto = (from p in db.Productos
+                                 where p.nombre.Contains(nombre)
+                                 select new {
+                                        p.id,
+                                        p.nombre,
+                                        p.existencia,
+                                        p.precio_venta
+                                        }).ToList() ;
+
+
+            Resultado.Info = BuscarProducto;
+
+            return Ok(Resultado);
+        }
+
 
         // POST api/values
         [HttpPost]
