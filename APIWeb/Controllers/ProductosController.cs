@@ -89,12 +89,15 @@ namespace APIWeb.Controllers
             Datos db = new Datos();
 
             var BuscarProducto = (from p in db.Productos
+                                  join c in db.Categorias
+                                         on p.idcategoria equals c.id
                                  where p.nombre.Contains(nombre)
                                  select new {
                                         p.id,
                                         p.nombre,
                                         p.existencia,
-                                        p.precio_venta
+                                        p.precio_venta,
+                                        nombre_categoria = c.nombre
                                         }).ToList() ;
 
 
