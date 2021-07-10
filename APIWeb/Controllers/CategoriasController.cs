@@ -46,6 +46,44 @@ namespace APIWeb.Controllers
             return Ok(Resultado);
         }
 
+        // GET: api/Categorias/Todos2
+        [HttpGet("[action]")]
+        public ActionResult Todos2()
+        {
+            // vser
+            try
+            {
+                // Consulta usando Linq To SQL
+               //var lista = (from c in db.Categorias select c).ToList();
+
+                var lista = (from c in db.Categorias
+                                orderby c.id ascending 
+                                select new {
+                                        categoria_id = c.id,
+                                        categoria_nombre = c.nombre
+                                        }
+                                ).ToList();
+
+
+                if (lista.Count == 0)
+                    throw new CategoriaException("Son muy pocas categorias");
+
+                Resultado.Info = lista;
+            }
+            catch (CategoriaException ex)
+            {
+                Resultado.Estado = false;
+                Resultado.Mensaje = ex.Message;
+            }
+            catch (Exception)
+            {
+                Resultado.Estado = false;
+                Resultado.Mensaje = "Se presento un error, consulta al administrador";
+                //ex.Message;
+            }
+            return Ok(Resultado);
+        }
+
         // GET api/Categoria/Buscar/1
         [HttpGet("Buscar/{id}")]
         public ActionResult Buscar(int id)
@@ -73,6 +111,84 @@ namespace APIWeb.Controllers
             return Ok(Resultado);
 
         }
+
+        // GET api/Categoria/Buscar/1
+        [HttpGet("[action]/{id}")]
+        public ActionResult BuscarId(int id)
+        {
+
+            //Categoria BuscarCategoria;
+            try
+            {
+
+                var BuscarCategoria = (from c in db.Categorias
+                                       where c.id == id
+                                       select new
+                                       {
+                                           c.id,
+                                           c.nombre,
+                                           c.descripcion
+                                       }
+                                      ).ToList() ;
+
+                if (BuscarCategoria.Count > 0)
+                    Resultado.Info = BuscarCategoria;
+                else
+                    throw new CategoriaException("Categoria no encontrada");
+            }
+            catch (CategoriaException ex)
+            {
+                Resultado.Mensaje = ex.Message;
+                Resultado.Estado = false;
+            }
+            catch (Exception)
+            {
+                Resultado.Mensaje = "Error en el Sistema, consulta al admin";
+            }
+
+            return Ok(Resultado);
+
+        }
+
+        [HttpGet("[action]/{nombre}")]
+        public ActionResult BuscarNombre(string nombre)
+        {
+
+            //Categoria BuscarCategoria;
+            try
+            {
+
+                var BuscarCategoria = (from c in db.Categorias
+                                       where c.nombre.Contains(nombre)
+                                       select new
+                                       {
+                                           c.id,
+                                           c.nombre,
+                                           c.descripcion
+                                       }
+                                      ).ToList();
+
+                if (BuscarCategoria.Count > 0)
+                    Resultado.Info = BuscarCategoria;
+                else
+                    throw new CategoriaException("Categoria no encontrada");
+            }
+            catch (CategoriaException ex)
+            {
+                Resultado.Mensaje = ex.Message;
+                Resultado.Estado = false;
+            }
+            catch (Exception)
+            {
+                Resultado.Mensaje = "Error en el Sistema, consulta al admin";
+            }
+
+            return Ok(Resultado);
+
+        }
+
+
+
 
         // POST api/Categorias/Nueva
         [HttpPost("Nueva")]
