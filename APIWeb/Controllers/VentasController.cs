@@ -30,8 +30,9 @@ namespace APIWeb.Controllers
                              v.num_factura,
                              v.impuesto,
                              v.total,
-                             detalles = dv
                          };
+
+
             Resultado.Info = ventas;
 
 

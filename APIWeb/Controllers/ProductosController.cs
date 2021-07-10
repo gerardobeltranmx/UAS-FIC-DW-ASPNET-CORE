@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using APIWeb.Helpers;
+using APIWeb.Models;
 using APIWeb.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -109,8 +110,20 @@ namespace APIWeb.Controllers
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody] string value)
+        public ActionResult Post([FromBody] ProductoNuevoViewModel p)
         {
+            Respuesta Resultado = new Respuesta();
+            Datos db = new Datos();
+
+            Producto nuevo = new Producto(p);
+
+
+            db.Productos.Add(nuevo);
+            db.SaveChanges();
+
+
+            return Ok(Resultado);
+
         }
 
         // PUT api/values/5

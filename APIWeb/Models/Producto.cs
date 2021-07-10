@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using APIWeb.ViewModels;
 
 namespace APIWeb.Models
 {
@@ -14,11 +15,17 @@ namespace APIWeb.Models
         public int existencia { get; set; }
         public string descripcion { get; set; }
         public bool activo { get; set; }
-       // public Categoria categoria { get; set; }//Objeto de relación
+        // public Categoria categoria { get; set; }//Objeto de relación
 
-        public Producto()
+        public Producto(ProductoNuevoViewModel p)
         {
-
+            activo = true;
+            codigo = p.codigo;
+            descripcion = p.descripcion;
+            existencia = p.existencia;
+            idcategoria = p.idcategoria;
+            nombre = p.nombre;
+            precio_venta = p.precio_venta;
         }
     }
 }
