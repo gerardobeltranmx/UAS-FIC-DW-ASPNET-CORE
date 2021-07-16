@@ -37,10 +37,10 @@ namespace APIWeb.Controllers
                 Resultado.Estado = false;
                 Resultado.Mensaje = ex.Message;
             }
-            catch(Exception)
+            catch(Exception ex)
             {
                 Resultado.Estado = false;
-                Resultado.Mensaje = "Se presento un error, consulta al administrador";
+                Resultado.Mensaje = ex.Message; //"Se presento un error, consulta al administrador";
                 //ex.Message;
             }
             return Ok(Resultado);
