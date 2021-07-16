@@ -1,0 +1,75 @@
+﻿@{
+    ViewData["Title"] = "Categorias";
+}
+<h1>Categorías </h1>
+
+
+<div id="app">
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="(item, index) in categorias">
+                <td> {{index + 1}}</td>
+                <td> {{item.nombre}}</td>
+                <td> {{item.descripcion}}</td>
+                <!-- <td> {{item.activo}}</td>-->
+                <td>
+                    <div v-if="item.activo==true">
+                        <span class="text-success">Activo</span>
+                    </div>
+                    <div v-else>
+                        <span class="text-danger">Inactivo</span>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+</div>
+
+@section Scripts{
+
+    <script>
+
+        var app = new Vue({
+            el: '#app',
+            data: {
+                categorias: [],
+                id: null,
+                nombre: "",
+                descripcion: "",
+                activo: null,
+                index: null
+            },
+            created: function () {
+                this.obtenerCategorias();
+            },
+            methods: {
+                obtenerCategorias: function () {
+                    var vm = this;
+                    $.ajax({
+                        url: "https://elsurtidor.azurewebsites.net/api/Categorias",
+                        method: "GET",
+                        dataType: 'JSON'
+                        })
+                        .done(function (resultado) {
+
+                            if (resultado.estado == true) {
+                                vm.categorias = resultado.datos;
+                            }
+                            else
+                                alert(resultado.mensaje);
+                        });
+                }
+            }
+
+        });</script>
+}
