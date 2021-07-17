@@ -131,6 +131,32 @@
                     this.nombre = "";
                     this.descripcion = "";
                     $("#NuevaCategoriaModal").modal('show');
+                },
+                guardarNuevaCategoria: function () {
+                    var vm = this;
+                    var nuevaCategoria = {
+                        nombre: vm.nombre,
+                        descripcion: vm.descripcion
+                    }
+
+                    $.ajax({
+                        url: "https://elsurtidor.azurewebsites.net/api/Categorias",
+                        data: JSON.stringify(nuevaCategoria),
+                        method: "POST",
+                        contentType: 'application/json',
+                        dataType: 'JSON'
+                    })
+                        .done(function (resultado) {
+
+                            if (resultado.estado == true) {
+                                  toastr.success("Categoria guardada satisfactoriamente");
+                                $("#NuevaCategoriaModal").modal('hide');
+                                vm.obtenerCategorias();
+
+                            }
+                            else
+                                toastr.error(resultado.mensaje);
+                        });
                 }
 
             }
