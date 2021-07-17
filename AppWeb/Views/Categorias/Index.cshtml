@@ -28,6 +28,7 @@
                 <th>Nombre</th>
                 <th>Descripción</th>
                 <th>Estado</th>
+                <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -35,13 +36,27 @@
                 <td> {{index + 1}}</td>
                 <td> {{item.nombre}}</td>
                 <td> {{item.descripcion}}</td>
-               <td>
-                    <div v-if="item.activo==true">
-                        <span class="text-success">Activo</span>
-                    </div>
-                    <div v-else>
-                        <span class="text-danger">Inactivo</span>
-                    </div>
+                <!-- <td>
+                         <div v-if="item.activo==true">
+                             <span class="text-success">Activo</span>
+                         </div>
+                         <div v-else>
+                             <span class="text-danger">Inactivo</span>
+                         </div>
+                     </td>
+                -->
+                <td>
+                    <span v-if="item.activo==true">
+                        <button class="btn btn-danger btn-sm" v-on:click="Inactivar(item)">
+                            Inactivar
+                        </button>
+                    </span>
+
+                    <span v-else>
+                        <button class="btn btn-success btn-sm" v-on:click="Activar(item)">
+                            Activar
+                        </button>
+                    </span>
                 </td>
                 <td>
                     <button class="btn btn-primary btn-sm" v-on:click="mostrarEditarCategoria(item)">
@@ -228,7 +243,49 @@
                         });
 
 
-                } 
+                },
+                Inactivar: function (item) {
+                    var vm = this;
+                  
+                    $.ajax({
+                        url: "https://apisurtidord.azurewebsites.net/api/Categorias/Inactivar/"+item.id,
+                        //data: JSON.stringify(nuevaCategoria),
+                        method: "DELETE",
+                        contentType: 'application/json',
+                        dataType: 'JSON'
+                    })
+                        .done(function (resultado) {
+
+                            if (resultado.estado == true) {
+                                toastr.success("Categoria inactivada");
+                                vm.obtenerCategorias();
+
+                            }
+                            else
+                                toastr.error(resultado.mensaje);
+                        });
+                },
+                Activar: function (item) {
+                    var vm = this;
+
+                    $.ajax({
+                        url: "https://apisurtidord.azurewebsites.net/api/Categorias/Activar/" + item.id,
+                       // data: JSON.stringify(nuevaCategoria),
+                        method: "DELETE",
+                        contentType: 'application/json',
+                        dataType: 'JSON'
+                    })
+                        .done(function (resultado) {
+
+                            if (resultado.estado == true) {
+                                toastr.success("Categoria activada");
+                                vm.obtenerCategorias();
+
+                            }
+                            else
+                                toastr.error(resultado.mensaje);
+                        });
+                }
 
             }
 
