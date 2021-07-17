@@ -8,7 +8,17 @@
 
     <!-- Lista de Categorias-->
     <div id="cargando">
-        <img src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif" />
+        <img src="https://i.pinimg.com/originals/4e/b6/97/4eb697b60cf8d2ac12de99e12a444362.gif" />
+    </div>
+
+
+    <div class="row">
+        <div class="col-lg-12">
+            <button class="btn btn-primary" v-on:click="mostrarNuevaCategoria">
+                Agregar nueva categoria
+            </button>
+        </div>
+
     </div>
 
     <table class="table">
@@ -116,7 +126,13 @@
                             $("#cargando").hide();
 
                         });
+                },
+                mostrarNuevaCategoria: function () {
+                    this.nombre = "";
+                    this.descripcion = "";
+                    $("#NuevaCategoriaModal").modal('show');
                 }
+
             }
 
         });</script>
