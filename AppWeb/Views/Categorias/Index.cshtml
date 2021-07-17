@@ -35,7 +35,6 @@
                 <td> {{index + 1}}</td>
                 <td> {{item.nombre}}</td>
                 <td> {{item.descripcion}}</td>
-                <!-- <td> {{item.activo}}</td>-->
                 <td>
                     <div v-if="item.activo==true">
                         <span class="text-success">Activo</span>
@@ -44,6 +43,12 @@
                         <span class="text-danger">Inactivo</span>
                     </div>
                 </td>
+                <td>
+                    <button class="btn btn-primary btn-sm" v-on:click="mostrarEditarCategoria(item)">
+                        Editar
+                    </button>
+                </td>
+
             </tr>
         </tbody>
     </table>
@@ -78,6 +83,36 @@
         </div>
     </div>
 
+    <!--Editar Categoria -->
+
+    <div class="modal" id="MostrarEditarCategoriaModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar categoria</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <label for="nombre">Nombre</label>
+                        <input v-model="nombre" type="text" class="form-control" style="width:100%" />
+                    </div>
+                    <div class="form-group">
+                        <label for="descripcion">Descripcion</label>
+                        <input v-model="descripcion" type="text" class="form-control" style="width:100%" />
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" v-on:click="guardarEditarCategoria">Guardar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 
@@ -157,6 +192,16 @@
                             else
                                 toastr.error(resultado.mensaje);
                         });
+                },
+                mostrarEditarCategoria: function (item) {
+                    this.id = item.id;
+                    this.nombre = item.nombre;
+                    this.descripcion = item.descripcion;
+                    $("#MostrarEditarCategoriaModal").modal('show');
+                },
+
+                guardarEditarCategoria: function () {
+
                 }
 
             }
