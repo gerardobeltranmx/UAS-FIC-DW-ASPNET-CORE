@@ -24,7 +24,7 @@ namespace APIWeb.Controllers
 
             var prod = db.Productos;// .Include(c => c.categoria);
 
-            var lista = prod.Select(p => new ProductoTodosViewModel
+            /*var lista = prod.Select(p => new ProductoTodosViewModel
                 {
                     id = p.id,
                     nombre = p.nombre,
@@ -35,9 +35,9 @@ namespace APIWeb.Controllers
                     //nombre_categoria = p.categoria.nombre
                 }
               );
+            */
 
-
-            Resultado.Info = lista;
+            Resultado.Info = prod;//lista;
 
             return Ok(Resultado);
 

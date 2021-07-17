@@ -35,7 +35,7 @@
                 <td> {{index + 1}}</td>
                 <td> {{item.nombre}}</td>
                 <td> {{item.descripcion}}</td>
-                <td>
+               <td>
                     <div v-if="item.activo==true">
                         <span class="text-success">Activo</span>
                     </div>
@@ -144,14 +144,14 @@
                 obtenerCategorias: function () {
                     var vm = this;
                     $.ajax({
-                        url: "https://elsurtidor.azurewebsites.net/api/Categorias",
+                        url: "https://apisurtidord.azurewebsites.net/api/Categorias/Todos",
                         method: "GET",
                         dataType: 'JSON'
                         })
                         .done(function (resultado) {
 
                             if (resultado.estado == true) {
-                                vm.categorias = resultado.datos;
+                                vm.categorias = resultado.info;
                                 toastr.success("Datos cargados satisfactoriamente");
 
                             }
@@ -175,7 +175,7 @@
                     }
 
                     $.ajax({
-                        url: "https://elsurtidor.azurewebsites.net/api/Categorias",
+                        url: "https://apisurtidord.azurewebsites.net/api/Categorias/Nueva",
                         data: JSON.stringify(nuevaCategoria),
                         method: "POST",
                         contentType: 'application/json',
@@ -198,11 +198,37 @@
                     this.nombre = item.nombre;
                     this.descripcion = item.descripcion;
                     $("#MostrarEditarCategoriaModal").modal('show');
-                },
+                }
+                ,
 
                 guardarEditarCategoria: function () {
+                    var vm = this;
+                    var modificaCategoria = {
+                        nombre: vm.nombre,
+                        descripcion: vm.descripcion
+                    }
 
-                }
+                    $.ajax({
+                        url: "https://apisurtidord.azurewebsites.net/api/Categorias/Actualizar/"+vm.id,
+                        data: JSON.stringify(modificaCategoria),
+                        method: "PUT",
+                        contentType: 'application/json',
+                        dataType: 'JSON'
+                    })
+                        .done(function (resultado) {
+
+                            if (resultado.estado == true) {
+                                toastr.success("Categoria actualizada satisfactoriamente");
+                                $("#MostrarEditarCategoriaModal").modal('hide');
+                                vm.obtenerCategorias();
+
+                            }
+                            else
+                                toastr.error(resultado.mensaje);
+                        });
+
+
+                } 
 
             }
 
