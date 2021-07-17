@@ -1,0 +1,364 @@
+﻿@{
+    ViewData["Title"] = "Productos";
+}
+<h1>Productos </h1>
+
+
+<div id="app">
+
+    <!-- Lista de Productos-->
+    <div id="cargando">
+        <img src="https://i.pinimg.com/originals/4e/b6/97/4eb697b60cf8d2ac12de99e12a444362.gif" />
+    </div>
+
+
+    <div class="row">
+        <div class="col-lg-12">
+            <button class="btn btn-primary" v-on:click="mostrarNuevoProducto">
+                Agregar nuevo Producto
+            </button>
+        </div>
+
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="(item, index) in Productos">
+                <td> {{index + 1}}</td>
+                <td> {{item.nombre}}</td>
+                <td> {{item.descripcion}}</td>
+                
+                <td>
+                    <span v-if="item.activo==true">
+                        <button class="btn btn-danger btn-sm" v-on:click="Inactivar(item)">
+                            Inactivar
+                        </button>
+                    </span>
+
+                    <span v-else>
+                        <button class="btn btn-success btn-sm" v-on:click="Activar(item)">
+                            Activar
+                        </button>
+                    </span>
+                </td>
+                <td>
+                    <button class="btn btn-primary btn-sm" v-on:click="mostrarEditarProducto(item)">
+                        Editar
+                    </button>
+                </td>
+
+            </tr>
+        </tbody>
+    </table>
+
+
+    <!--Nueva Producto -->
+    <div class="modal" id="NuevoProductoModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Agregar nuevo producto</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="codigo">Codigo</label>
+                        <input v-model="codigo" type="text" class="form-control" style="width:100%" />
+                    </div>
+                    <div class="form-group">
+                        <label for="nombre">Nombre</label>
+                        <input v-model="nombre" type="text" class="form-control" style="width:100%" />
+                    </div>
+                    <div class="form-group">
+                        <label for="descripcion">Descripcion</label>
+                        <input v-model="descripcion" type="text" class="form-control" style="width:100%" />
+                    </div>
+                    <div class="form-group">
+                        <label for="existencia">Existencia</label>
+                        <input v-model="existencia" type="text" class="form-control" style="width:100%" />
+                    </div>
+                    <div class="form-group">
+                        <label for="precio_venta">Precio de Venta</label>
+                        <input v-model="precio_venta" type="text" class="form-control" style="width:100%" />
+                    </div>
+                    <div class="form-group">
+                        <label for="categoria">Categoria</label>
+                        <select v-model="idCategoria" class="form-control" id="categoria">
+                            <option v-for="Categoria in Categorias"
+                                :value="Categoria.id">{{Categoria.nombre}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" v-on:click="guardarNuevoProducto">Guardar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Editar Producto -->
+
+    <div class="modal" id="MostrarEditarProductoModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Producto</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="codigo">Codigo</label>
+                        <input v-model="codigo" type="text" class="form-control" style="width:100%" />
+                    </div>
+                    <div class="form-group">
+                        <label for="nombre">Nombre</label>
+                        <input v-model="nombre" type="text" class="form-control" style="width:100%" />
+                    </div>
+                    <div class="form-group">
+                        <label for="descripcion">Descripcion</label>
+                        <input v-model="descripcion" type="text" class="form-control" style="width:100%" />
+                    </div>
+                    <div class="form-group">
+                        <label for="existencia">Existencia</label>
+                        <input v-model="existencia" type="text" class="form-control" style="width:100%" />
+                    </div>
+                    <div class="form-group">
+                        <label for="precio_venta">Precio de Venta</label>
+                        <input v-model="precio_venta" type="text" class="form-control" style="width:100%" />
+                    </div>
+                    <div class="form-group">
+                        <label for="categoria">Categoria</label>
+                        <select v-model="idCategoria" class="form-control" id="categoria">
+                            <option v-for="Categoria in Categorias"
+                                    :value="Categoria.id">
+                                {{Categoria.nombre}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" v-on:click="guardarEditarProducto">Guardar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+
+
+
+
+
+@section Scripts{
+
+    <script>var app = new Vue({
+            el: '#app',
+            data: {
+                Productos: [],
+                Categorias:[],
+                id: null,
+               idCategoria: 0,
+                codigo: "",
+                precio_venta: 0,
+                existencia: 0,  
+                nombre: "",
+                descripcion: "",
+                activo: null,
+                index: null
+
+
+    },
+    created: function () {
+                this.obtenerCategorias();
+                this.obtenerProductos();
+            },
+            methods: {
+                obtenerProductos: function () {
+                    var vm = this;
+                    $.ajax({
+                        url: "https://apisurtidord.azurewebsites.net/api/Productos/Todos",
+                        method: "GET",
+                        dataType: 'JSON'
+                        })
+                        .done(function (resultado) {
+
+                            if (resultado.estado == true) {
+                                vm.Productos = resultado.info;
+                                toastr.success("Datos cargados satisfactoriamente");
+
+                            }
+                            else
+                                toastr.error(resultado.mensaje);
+
+                            $("#cargando").hide();
+
+                        });
+                },
+                mostrarNuevoProducto: function () {
+                    this.nombre = "";
+                    this.descripcion = "";
+                    $("#NuevoProductoModal").modal('show');
+                },
+                guardarNuevoProducto: function () {
+                    var vm = this;
+                    var nuevoProducto = {
+                        codigo: vm.codigo,
+                        nombre: vm.nombre,
+                        descripcion: vm.descripcion,
+                        idcategoria: vm.idCategoria,
+                        precio_venta: vm.precio_venta,
+                        existencia: vm.existencia
+                    }
+
+                    $.ajax({
+                        url: "https://apisurtidord.azurewebsites.net/api/Productos",
+                        data: JSON.stringify(nuevoProducto),
+                        method: "POST",
+                        contentType: 'application/json',
+                        dataType: 'JSON'
+                    })
+                        .done(function (resultado) {
+
+                            if (resultado.estado == true) {
+                                  toastr.success("Producto guardado satisfactoriamente");
+                                $("#NuevoProductoModal").modal('hide');
+                                vm.obtenerProductos();
+
+                            }
+                            else
+                                toastr.error(resultado.mensaje);
+                        });
+                },
+                mostrarEditarProducto: function (item) {
+                    this.id = item.id;
+                    this.codigo = item.codigo;
+                    this.nombre = item.nombre;
+                    this.descripcion = item.descripcion;
+                    this.existencia = item.existencia;
+                    this.precio_venta = item.precio_venta;
+                    this.idCategoria = item.idcategoria;
+                    $("#MostrarEditarProductoModal").modal('show');
+                }
+                ,
+
+                guardarEditarProducto: function () {
+                    var vm = this;
+                    var modificaProducto = {
+                        nombre: vm.nombre,
+                        descripcion: vm.descripcion,
+                        codigo: vm.codigo,
+                        precio_venta: vm.precio_venta,
+                        existencia: vm.existencia,
+                        idcategoria: idCategoria
+
+                    }
+
+                    $.ajax({
+                        url: "https://apisurtidord.azurewebsites.net/api/Productos/"+vm.id,
+                        data: JSON.stringify(modificaProducto),
+                        method: "PUT",
+                        contentType: 'application/json',
+                        dataType: 'JSON'
+                    })
+                        .done(function (resultado) {
+
+                            if (resultado.estado == true) {
+                                toastr.success("Producto actualizado satisfactoriamente");
+                                $("#MostrarEditarProductoModal").modal('hide');
+                                vm.obtenerProductos();
+
+                            }
+                            else
+                                toastr.error(resultado.mensaje);
+                        });
+
+
+                },
+                Inactivar: function (item) {
+                    var vm = this;
+
+                    $.ajax({
+                        url: "https://apisurtidord.azurewebsites.net/api/Productos/Inactivar/"+item.id,
+                        //data: JSON.stringify(nuevaProducto),
+                        method: "DELETE",
+                        contentType: 'application/json',
+                        dataType: 'JSON'
+                    })
+                        .done(function (resultado) {
+
+                            if (resultado.estado == true) {
+                                toastr.success("Producto inactivada");
+                                vm.obtenerProductos();
+
+                            }
+                            else
+                                toastr.error(resultado.mensaje);
+                        });
+                },
+                Activar: function (item) {
+                    var vm = this;
+
+                    $.ajax({
+                        url: "https://apisurtidord.azurewebsites.net/api/Productos/Activar/" + item.id,
+                       // data: JSON.stringify(nuevaProducto),
+                        method: "DELETE",
+                        contentType: 'application/json',
+                        dataType: 'JSON'
+                    })
+                        .done(function (resultado) {
+
+                            if (resultado.estado == true) {
+                                toastr.success("Producto activada");
+                                vm.obtenerProductos();
+
+                            }
+                            else
+                                toastr.error(resultado.mensaje);
+                        });
+                },
+                obtenerCategorias: function () {
+                    var vm = this;
+                    $.ajax({
+                        url: "https://apisurtidord.azurewebsites.net/api/Categorias/Todos",
+                        method: "GET",
+                        dataType: 'JSON'
+                    })
+                        .done(function (resultado) {
+
+                            if (resultado.estado == true) {
+                                vm.Categorias = resultado.info;
+                                //toastr.success("Datos cargados satisfactoriamente");
+
+                            }
+                            else
+                                toastr.error(resultado.mensaje);
+
+                            $("#cargando").hide();
+
+                        });
+                }
+
+            }
+
+        });</script>
+}
