@@ -173,7 +173,8 @@
 
     <script>var app = new Vue({
             el: '#app',
-            data: {
+    data: {
+                Ruta:"http://localhost:5000/api",
                 Productos: [],
                 Categorias:[],
                 id: null,
@@ -196,7 +197,7 @@
                 obtenerProductos: function () {
                     var vm = this;
                     $.ajax({
-                        url: "https://apisurtidord.azurewebsites.net/api/Productos/Todos",
+                        url: this.Ruta + "/Productos/Todos",
                         method: "GET",
                         dataType: 'JSON'
                         })
@@ -231,7 +232,7 @@
                     }
 
                     $.ajax({
-                        url: "https://apisurtidord.azurewebsites.net/api/Productos",
+                        url: Ruta + "/Productos",
                         data: JSON.stringify(nuevoProducto),
                         method: "POST",
                         contentType: 'application/json',
@@ -274,7 +275,7 @@
                     }
 
                     $.ajax({
-                        url: "https://apisurtidord.azurewebsites.net/api/Productos/"+vm.id,
+                        url: Ruta + "/Productos/" + vm.id,
                         data: JSON.stringify(modificaProducto),
                         method: "PUT",
                         contentType: 'application/json',
@@ -339,7 +340,7 @@
                 obtenerCategorias: function () {
                     var vm = this;
                     $.ajax({
-                        url: "https://apisurtidord.azurewebsites.net/api/Categorias/Todos",
+                        url: Ruta + "/api/Categorias/Todos",
                         method: "GET",
                         dataType: 'JSON'
                     })

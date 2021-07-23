@@ -44,8 +44,8 @@ namespace APIWeb
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "APIWeb", Version = "v1" });
             });
 
-            services.AddControllers().AddJsonOptions(x =>
-    x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
+          //  services.AddControllers().AddJsonOptions(x =>
+   // x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
         }
 

@@ -25,7 +25,7 @@ namespace APIWeb.Controllers
                                c.email,
                                c.telefono
                            };
-            Resultado.Info = clientes;
+            Resultado.Info = db.Clientes;
 
 
             return Ok(Resultado);

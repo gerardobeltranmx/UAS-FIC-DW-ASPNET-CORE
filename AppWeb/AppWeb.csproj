@@ -7,9 +7,11 @@
   <ItemGroup>
     <None Remove="Views\Categorias\" />
     <None Remove="Views\Productos\" />
+    <None Remove="Views\Ventas\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\Categorias\" />
     <Folder Include="Views\Productos\" />
+    <Folder Include="Views\Ventas\" />
   </ItemGroup>
 </Project>

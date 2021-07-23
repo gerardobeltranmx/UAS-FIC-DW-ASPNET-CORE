@@ -264,7 +264,7 @@ namespace APIWeb.Controllers
         }
 
         // DELETE api/values/5
-        [HttpDelete("Inactivar/{id}")]
+        [HttpDelete("[action]/{id}")]
         public ActionResult Inactivar(int id)
         {
 
@@ -277,6 +277,42 @@ namespace APIWeb.Controllers
                     BuscarCategoria.activo = false;
                     db.SaveChanges();
                     Resultado.Info=new
+                            CategoriaIdViewModel(BuscarCategoria);
+
+                }
+                else
+                    throw new Exception("Categoria no fue encontrada para inactivar");
+
+
+            }
+            catch (CategoriaException ex)
+            {
+                Resultado.Mensaje = ex.Message;
+                Resultado.Estado = false;
+            }
+            catch (Exception)
+            {
+                Resultado.Mensaje = "Error en el Sistema, consulta al admin";
+            }
+
+            return Ok(Resultado);
+
+        }
+
+        // DELETE api/values/5
+        [HttpDelete("[action]/{id}")]
+        public ActionResult Activar(int id)
+        {
+
+            try
+            {
+                Categoria BuscarCategoria = db.Categorias.Find(id);
+                if (BuscarCategoria != null)
+                {
+                    // db.Categorias.Remove(BuscarCategoria);
+                    BuscarCategoria.activo = true;
+                    db.SaveChanges();
+                    Resultado.Info = new
                             CategoriaIdViewModel(BuscarCategoria);
 
                 }

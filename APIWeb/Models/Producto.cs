@@ -17,7 +17,7 @@ namespace APIWeb.Models
         public bool activo { get; set; }
         // public Categoria categoria { get; set; }//Objeto de relación
 
-        /*
+        
         public Producto(ProductoNuevoViewModel p)
         {
             activo = true;
@@ -27,7 +27,7 @@ namespace APIWeb.Models
             idcategoria = p.idcategoria;
             nombre = p.nombre;
             precio_venta = p.precio_venta;
-        }*/
+        }
         public Producto()
         {
         }

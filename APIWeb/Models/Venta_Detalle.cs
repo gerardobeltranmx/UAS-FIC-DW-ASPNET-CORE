@@ -13,7 +13,7 @@ namespace APIWeb.Models
         public int cantidad { get; set; }
         public decimal precio { get; set; }
         public decimal descuento { get; set; }
-        public Venta venta  { get; set; }
+        //public Venta venta  { get; set; }
 
 
         public Venta_Detalle()

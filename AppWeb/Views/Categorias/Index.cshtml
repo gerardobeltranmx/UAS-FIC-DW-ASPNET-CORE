@@ -1,15 +1,20 @@
 ﻿@{
     ViewData["Title"] = "Categorias";
 }
-<h1>Categorías </h1>
+<h1>
+    Categorías
+    
+    <span id="cargando">
+        <img height="35" src="https://i.pinimg.com/originals/4e/b6/97/4eb697b60cf8d2ac12de99e12a444362.gif" />
+    </span>
+
+</h1>
 
 
 <div id="app">
 
     <!-- Lista de Categorias-->
-    <div id="cargando">
-        <img src="https://i.pinimg.com/originals/4e/b6/97/4eb697b60cf8d2ac12de99e12a444362.gif" />
-    </div>
+    
 
 
     <div class="row">
@@ -19,6 +24,14 @@
             </button>
         </div>
 
+    </div>
+
+    <hr/>
+    <div class="input-group">
+        <input v-model="expresion" type="text" class="form-control" />
+        <button class="btn btn-primary btn-sm" v-on:click="filtrarCategorias">
+            Filtrar
+        </button>
     </div>
 
     <table class="table">
@@ -145,12 +158,15 @@
         var app = new Vue({
             el: '#app',
             data: {
+                Ruta: "http://localhost:5000/api",
                 categorias: [],
                 id: null,
                 nombre: "",
                 descripcion: "",
                 activo: null,
-                index: null
+                index: null,
+                expresion: "",
+                apiBuscar: "/Categorias/Todos"
             },
             created: function () {
                 this.obtenerCategorias();
@@ -159,7 +175,7 @@
                 obtenerCategorias: function () {
                     var vm = this;
                     $.ajax({
-                        url: "https://apisurtidord.azurewebsites.net/api/Categorias/Todos",
+                        url: this.Ruta + this.apiBuscar,
                         method: "GET",
                         dataType: 'JSON'
                         })
@@ -190,7 +206,7 @@
                     }
 
                     $.ajax({
-                        url: "https://apisurtidord.azurewebsites.net/api/Categorias/Nueva",
+                        url: vm.Ruta + "/Categorias/Nueva",
                         data: JSON.stringify(nuevaCategoria),
                         method: "POST",
                         contentType: 'application/json',
@@ -224,7 +240,7 @@
                     }
 
                     $.ajax({
-                        url: "https://apisurtidord.azurewebsites.net/api/Categorias/Actualizar/"+vm.id,
+                        url: vm.Ruta+"/Categorias/Actualizar/"+vm.id,
                         data: JSON.stringify(modificaCategoria),
                         method: "PUT",
                         contentType: 'application/json',
@@ -248,7 +264,7 @@
                     var vm = this;
                   
                     $.ajax({
-                        url: "https://apisurtidord.azurewebsites.net/api/Categorias/Inactivar/"+item.id,
+                        url: vm.Ruta+"/Categorias/Inactivar/"+item.id,
                         //data: JSON.stringify(nuevaCategoria),
                         method: "DELETE",
                         contentType: 'application/json',
@@ -269,7 +285,7 @@
                     var vm = this;
 
                     $.ajax({
-                        url: "https://apisurtidord.azurewebsites.net/api/Categorias/Activar/" + item.id,
+                        url: vm.Ruta + "/Categorias/Activar/"+ item.id,
                        // data: JSON.stringify(nuevaCategoria),
                         method: "DELETE",
                         contentType: 'application/json',
@@ -285,6 +301,14 @@
                             else
                                 toastr.error(resultado.mensaje);
                         });
+                },
+                filtrarCategorias: function () {
+                    if (this.expresion)
+                        this.apiBuscar = "/Categorias/BuscarNombre/" + this.expresion;
+                    else
+                        this.apiBuscar = "/Categorias/Todos";
+
+                    this.obtenerCategorias();
                 }
 
             }
