@@ -74,7 +74,7 @@
                                 <td> {{item.nombre}}</td>
                                 <td> {{item.rfc}}</td>
                                 <td>
-                                    <button class="btn btn-primary btn-sm" v-on:click="">
+                                    <button class="btn btn-primary btn-sm" v-on:click="clienteSeleccionado(item)">
                                         Seleccionar
                                     </button>
                                 </td>
@@ -92,3 +92,184 @@
 
 
 </div> <!--fin id=app-->
+
+@section Scripts{
+
+    <script>var app = new Vue({
+            el: '#app',
+            data: {
+                Ruta: "http://localhost:5000/api",
+                clientes: [],
+                id: null,
+                nombre: "",
+                nombreCliente:"",
+
+                activo: null,
+                index: null,
+                expresion: "",
+                apiBuscar: "/Categorias/Todos"
+            },
+            created: function () {
+                
+            },
+    methods: {
+
+        seleccionarClientes: function () {
+            this.obtenerClientes();
+            $("#MostrarClientesModal").modal('show');
+        },
+        obtenerClientes: function () {
+            var vm = this;
+            $.ajax({
+                url: this.Ruta + "/Clientes",
+                method: "GET",
+                dataType: 'JSON'
+            })
+                .done(function (resultado) {
+
+                    if (resultado.estado == true) {
+                        vm.clientes = resultado.info;
+                        toastr.success("Datos cargados satisfactoriamente");
+
+                    }
+                    else
+                        toastr.error(resultado.mensaje);
+
+
+                });
+
+        
+                
+        },
+        clienteSeleccionado: function (item) {
+
+            this.nombreCliente = item.nombre;
+            console.log(item);
+            idCliente = item.id;
+            $("#MostrarClientesModal").modal('hide');
+
+        }
+
+        /*,
+                mostrarNuevaCategoria: function () {
+                    this.nombre = "";
+                    this.descripcion = "";
+                    $("#NuevaCategoriaModal").modal('show');
+                },
+                guardarNuevaCategoria: function () {
+                    var vm = this;
+                    var nuevaCategoria = {
+                        nombre: vm.nombre,
+                        descripcion: vm.descripcion
+                    }
+
+                    $.ajax({
+                        url: vm.Ruta + "/Categorias/Nueva",
+                        data: JSON.stringify(nuevaCategoria),
+                        method: "POST",
+                        contentType: 'application/json',
+                        dataType: 'JSON'
+                    })
+                        .done(function (resultado) {
+
+                            if (resultado.estado == true) {
+                                  toastr.success("Categoria guardada satisfactoriamente");
+                                $("#NuevaCategoriaModal").modal('hide');
+                                vm.obtenerCategorias();
+
+                            }
+                            else
+                                toastr.error(resultado.mensaje);
+                        });
+                },
+                mostrarEditarCategoria: function (item) {
+                    this.id = item.id;
+                    this.nombre = item.nombre;
+                    this.descripcion = item.descripcion;
+                    $("#MostrarEditarCategoriaModal").modal('show');
+                }
+                ,
+
+                guardarEditarCategoria: function () {
+                    var vm = this;
+                    var modificaCategoria = {
+                        nombre: vm.nombre,
+                        descripcion: vm.descripcion
+                    }
+
+                    $.ajax({
+                        url: vm.Ruta+"/Categorias/Actualizar/"+vm.id,
+                        data: JSON.stringify(modificaCategoria),
+                        method: "PUT",
+                        contentType: 'application/json',
+                        dataType: 'JSON'
+                    })
+                        .done(function (resultado) {
+
+                            if (resultado.estado == true) {
+                                toastr.success("Categoria actualizada satisfactoriamente");
+                                $("#MostrarEditarCategoriaModal").modal('hide');
+                                vm.obtenerCategorias();
+
+                            }
+                            else
+                                toastr.error(resultado.mensaje);
+                        });
+
+
+                },
+                Inactivar: function (item) {
+                    var vm = this;
+
+                    $.ajax({
+                        url: vm.Ruta+"/Categorias/Inactivar/"+item.id,
+                        //data: JSON.stringify(nuevaCategoria),
+                        method: "DELETE",
+                        contentType: 'application/json',
+                        dataType: 'JSON'
+                    })
+                        .done(function (resultado) {
+
+                            if (resultado.estado == true) {
+                                toastr.success("Categoria inactivada");
+                                vm.obtenerCategorias();
+
+                            }
+                            else
+                                toastr.error(resultado.mensaje);
+                        });
+                },
+                Activar: function (item) {
+                    var vm = this;
+
+                    $.ajax({
+                        url: vm.Ruta + "/Categorias/Activar/"+ item.id,
+                       // data: JSON.stringify(nuevaCategoria),
+                        method: "DELETE",
+                        contentType: 'application/json',
+                        dataType: 'JSON'
+                    })
+                        .done(function (resultado) {
+
+                            if (resultado.estado == true) {
+                                toastr.success("Categoria activada");
+                                vm.obtenerCategorias();
+
+                            }
+                            else
+                                toastr.error(resultado.mensaje);
+                        });
+                },
+                filtrarCategorias: function () {
+                    if (this.expresion)
+                        this.apiBuscar = "/Categorias/BuscarNombre/" + this.expresion;
+                    else
+                        this.apiBuscar = "/Categorias/Todos";
+
+                    this.obtenerCategorias();
+                }
+                */
+            }
+
+        });</script>
+}
