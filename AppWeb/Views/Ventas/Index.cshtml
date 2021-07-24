@@ -21,8 +21,8 @@
 
     <div class="row">
         <div class="col-lg-12">
-            <button class="btn btn-primary" v-on:click="">
-                Agregar
+            <button class="btn btn-primary" v-on:click="seleccionarProductos">
+                +
             </button>
         </div>
 
@@ -60,8 +60,7 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>ID
-                                <th>
+                                <th>ID</th>
                                 <th>Nombre</th>
                                 <th>RFC</th>
 
@@ -90,6 +89,54 @@
         </div>
     </div>
 
+    <!--Lista de Productos-->
+    <div class="modal" id="MostrarProductosModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Lista de productos</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Codigo</th>
+                                <th>Nombre</th>
+                                <th>Precio</th>
+                                <th>Existencia</th>
+
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(item, index) in productos">
+                                <td> {{index + 1}}</td>
+                                <td> {{item.codigo}}</td>
+                                <td> {{item.nombre}}</td>
+                                <td> {{item.precio_venta}}</td>
+                                <td> {{item.existencia}}</td>
+
+                                <td>
+                                    <button class="btn btn-primary btn-sm" v-on:click="productoSeleccionado(item)">
+                                        Seleccionar
+                                    </button>
+                                </td>
+
+                            </tr>
+
+
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
 
 </div> <!--fin id=app-->
 
@@ -100,6 +147,7 @@
             data: {
                 Ruta: "http://localhost:5000/api",
                 clientes: [],
+                productos:[],
                 id: null,
                 nombre: "",
                 nombreCliente:"",
@@ -113,7 +161,7 @@
                 
             },
     methods: {
-
+         // Operaciones con Clientes
         seleccionarClientes: function () {
             this.obtenerClientes();
             $("#MostrarClientesModal").modal('show');
@@ -147,6 +195,43 @@
             console.log(item);
             idCliente = item.id;
             $("#MostrarClientesModal").modal('hide');
+
+        },
+        // Operaciones con Productos
+        seleccionarProductos: function () {
+            this.obtenerProductos();
+            $("#MostrarProductosModal").modal('show');
+        },
+        obtenerProductos: function () {
+            var vm = this;
+            $.ajax({
+                url: this.Ruta + "/Productos/Todos",
+                method: "GET",
+                dataType: 'JSON'
+            })
+                .done(function (resultado) {
+
+                    if (resultado.estado == true) {
+                        vm.productos = resultado.info;
+                        toastr.success("Datos cargados satisfactoriamente");
+
+                    }
+                    else
+                        toastr.error(resultado.mensaje);
+
+
+                });
+
+
+
+        },
+        productoSeleccionado: function (item) {
+/*
+            this.nombreCliente = item.nombre;
+            console.log(item);
+            idCliente = item.id;
+*/
+        $("#MostrarProductosModal").modal('hide');
 
         }
 
