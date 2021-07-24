@@ -41,6 +41,34 @@
             </tr>
         </thead>
         <tbody>
+
+            <tr v-for="(item, index) in detalles">
+                <td> {{index + 1}}</td>
+                <td> {{item.codigo}}</td>
+                <td> {{item.nombre}}</td>
+                <td> <input type="number" v-model="item.cantidad" /> </td>
+                <td> <input type="number" v-model="item.precio_venta" /></td>
+                <td> {{(item.precio_venta * item.cantidad).toFixed(2)}}</td>
+
+
+                <td>
+                    <button class="btn btn-danger btn-sm" v-on:click="eliminarDetalle(item)">
+                        -
+                    </button>
+                </td>
+            </tr>
+            <tr>
+                <td align="right" colspan="6">Total</td>
+                <td align="right" >{{(Total=calcularTotal).toFixed(2)}}</td>
+            </tr>
+            <tr>
+                <td align="right" colspan="6">IVA ({{IVA}}%)</td>
+                <td  align="right">{{(Impuesto = IVA * Total /100).toFixed(2)  }}</td>
+            </tr>
+            <tr>
+                <td  align="right" colspan="6">Total Neto</td>
+                <td  align="right">{{(TotalNeto = Total + Impuesto).toFixed(2)}}</td>
+            </tr>
         </tbody>
     </table>
 
@@ -147,93 +175,131 @@
             data: {
                 Ruta: "http://localhost:5000/api",
                 clientes: [],
-                productos:[],
+                productos: [],
+                detalles: [],
                 id: null,
                 nombre: "",
-                nombreCliente:"",
-
+                nombreCliente: "",
+                Total: 0,
+                IVA: 16,
+                Impuesto: 0,
+                TotalNeto: 0,
                 activo: null,
                 index: null,
                 expresion: "",
                 apiBuscar: "/Categorias/Todos"
             },
             created: function () {
-                
+
             },
-    methods: {
-         // Operaciones con Clientes
-        seleccionarClientes: function () {
-            this.obtenerClientes();
-            $("#MostrarClientesModal").modal('show');
-        },
-        obtenerClientes: function () {
-            var vm = this;
-            $.ajax({
-                url: this.Ruta + "/Clientes",
-                method: "GET",
-                dataType: 'JSON'
-            })
-                .done(function (resultado) {
+            computed: {
 
-                    if (resultado.estado == true) {
-                        vm.clientes = resultado.info;
-                        toastr.success("Datos cargados satisfactoriamente");
+                calcularTotal: function () {
+                    var resultado = 0.0;
 
+                    for (let detalle of this.detalles) {
+                    resultado = resultado + detalle.cantidad * detalle.precio_venta;
                     }
-                    else
-                        toastr.error(resultado.mensaje);
+
+                    return resultado;
+                }
+            },
+
+            methods: {
+                // Operaciones con Clientes
+                seleccionarClientes: function () {
+                    this.obtenerClientes();
+                    $("#MostrarClientesModal").modal('show');
+                },
+                obtenerClientes: function () {
+                    var vm = this;
+                    $.ajax({
+                        url: this.Ruta + "/Clientes",
+                        method: "GET",
+                        dataType: 'JSON'
+                    })
+                        .done(function (resultado) {
+
+                            if (resultado.estado == true) {
+                                vm.clientes = resultado.info;
+                                toastr.success("Datos cargados satisfactoriamente");
+
+                            }
+                            else
+                                toastr.error(resultado.mensaje);
 
 
-                });
+                        });
 
-        
-                
-        },
-        clienteSeleccionado: function (item) {
 
-            this.nombreCliente = item.nombre;
-            console.log(item);
-            idCliente = item.id;
-            $("#MostrarClientesModal").modal('hide');
 
-        },
-        // Operaciones con Productos
-        seleccionarProductos: function () {
-            this.obtenerProductos();
-            $("#MostrarProductosModal").modal('show');
-        },
-        obtenerProductos: function () {
-            var vm = this;
-            $.ajax({
-                url: this.Ruta + "/Productos/Todos",
-                method: "GET",
-                dataType: 'JSON'
-            })
-                .done(function (resultado) {
+                },
+                clienteSeleccionado: function (item) {
 
-                    if (resultado.estado == true) {
-                        vm.productos = resultado.info;
-                        toastr.success("Datos cargados satisfactoriamente");
+                    this.nombreCliente = item.nombre;
+                    console.log(item);
+                    idCliente = item.id;
+                    $("#MostrarClientesModal").modal('hide');
 
+                },
+                // Operaciones con Productos
+                seleccionarProductos: function () {
+                    this.obtenerProductos();
+                    $("#MostrarProductosModal").modal('show');
+                },
+                obtenerProductos: function () {
+                    var vm = this;
+                    $.ajax({
+                        url: this.Ruta + "/Productos/Todos",
+                        method: "GET",
+                        dataType: 'JSON'
+                    })
+                        .done(function (resultado) {
+
+                            if (resultado.estado == true) {
+                                vm.productos = resultado.info;
+                                toastr.success("Datos cargados satisfactoriamente");
+
+                            }
+                            else
+                                toastr.error(resultado.mensaje);
+                        });
+
+
+
+                },
+                productoSeleccionado: function (item) {
+
+                    var detalle = {
+                        id: item.id,
+                        codigo: item.codigo,
+                        nombre: item.nombre,
+                        precio_venta: item.precio_venta,
+                        cantidad: 1
                     }
-                    else
-                        toastr.error(resultado.mensaje);
+                    if (this.validarDetalle(detalle)) {
+                        this.detalles.push(detalle)
+                    }
+                    else {
+                        toastr.error("Producto ya esta en la lista");
+                    }
 
+                    $("#MostrarProductosModal").modal('hide');
 
-                });
+                },
+                eliminarDetalle: function (item) {
+                    var pos = this.detalles.indexOf(item);
+                    this.detalles.splice(pos, 1);
+                },
+                validarDetalle: function(item){
+                    for (let detalle of this.detalles) {
+                        if (detalle.codigo == item.codigo)
+                            return false;
+                    }
 
+                    return true;
+                }
 
-
-        },
-        productoSeleccionado: function (item) {
-/*
-            this.nombreCliente = item.nombre;
-            console.log(item);
-            idCliente = item.id;
-*/
-        $("#MostrarProductosModal").modal('hide');
-
-        }
 
         /*,
                 mostrarNuevaCategoria: function () {
