@@ -11,7 +11,7 @@
 
     <!--Formulario de Ventas-->
 
-    <div class="input-group">
+    <div class="input-group" style="width:40%">
         <input v-model="nombreCliente" readonly type="text" class="form-control" />
         <button class="btn btn-primary btn-sm" v-on:click="seleccionarClientes">
             Buscar cliente
@@ -19,6 +19,17 @@
     </div>
     <hr />
 
+    <div class="input-group" style="width:40%">
+        <input v-model="nombreVendedor" readonly type="text" class="form-control" />
+        <button class="btn btn-primary btn-sm" v-on:click="seleccionarVendedores">
+            Buscar vendedor
+        </button>
+    </div>
+    <hr />
+    <div class="form-group">
+        <label for="nombre">Num. Factura</label>
+        <input v-model="num_factura" type="text" class="form-control" style="width:40%" />
+    </div>
     <div class="row">
         <div class="col-lg-12">
             <button class="btn btn-primary" v-on:click="seleccionarProductos">
@@ -47,7 +58,10 @@
                 <td> {{item.codigo}}</td>
                 <td> {{item.nombre}}</td>
                 <td> <input type="number" v-model="item.cantidad" /> </td>
-                <td> <input type="number" v-model="item.precio_venta" /></td>
+                <td> {{item.precio_venta}}</td>
+
+                <!-- <td> <input type="number" v-model="item.precio_venta" /></td>
+    -->
                 <td> {{(item.precio_venta * item.cantidad).toFixed(2)}}</td>
 
 
@@ -59,18 +73,27 @@
             </tr>
             <tr>
                 <td align="right" colspan="6">Total</td>
-                <td align="right" >{{(Total=calcularTotal).toFixed(2)}}</td>
+                <td align="right">{{(Total=calcularTotal).toFixed(2)}}</td>
             </tr>
             <tr>
                 <td align="right" colspan="6">IVA ({{IVA}}%)</td>
-                <td  align="right">{{(Impuesto = IVA * Total /100).toFixed(2)  }}</td>
+                <td align="right">{{(Impuesto = IVA * Total /100).toFixed(2)  }}</td>
             </tr>
             <tr>
-                <td  align="right" colspan="6">Total Neto</td>
-                <td  align="right">{{(TotalNeto = Total + Impuesto).toFixed(2)}}</td>
+                <td align="right" colspan="6">Total Neto</td>
+                <td align="right">{{(TotalNeto = Total + Impuesto).toFixed(2)}}</td>
             </tr>
+            <tr>
+                <td align="right" colspan="7">
+                    <button class="btn btn-primary" v-on:click="guardarVenta">
+                        Guardar
+                    </button>
+                </td>
+             </tr>
         </tbody>
     </table>
+    
+
 
     <!--Lista de Clientes-->
     <div class="modal" id="MostrarClientesModal" tabindex="-1" role="dialog">
@@ -111,6 +134,7 @@
 
                         </tbody>
                     </table>
+                  x
                 </div>
 
             </div>
@@ -165,6 +189,50 @@
             </div>
         </div>
     </div>
+    <!--Lista de Vendedores-->
+    <div class="modal" id="MostrarVendedoresModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Lista de Vendedores (Usuarios)</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>RFC</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(item, index) in vendedores">
+                                <td> {{index + 1}}</td>
+                                <td> {{item.id}}</td>
+                                <td> {{item.nombre}}</td>
+                                <td> {{item.telefono}}</td>
+                                <td>
+                                    <button class="btn btn-primary btn-sm" v-on:click="vendedorSeleccionado(item)">
+                                        Seleccionar
+                                    </button>
+                                </td>
+
+                            </tr>
+
+
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
 
 </div> <!--fin id=app-->
 
@@ -177,9 +245,11 @@
                 clientes: [],
                 productos: [],
                 detalles: [],
+                vendedores: [],
                 id: null,
                 nombre: "",
                 nombreCliente: "",
+                idCliente:0,
                 Total: 0,
                 IVA: 16,
                 Impuesto: 0,
@@ -187,7 +257,13 @@
                 activo: null,
                 index: null,
                 expresion: "",
-                apiBuscar: "/Categorias/Todos"
+                apiBuscar: "/Categorias/Todos",
+                nombreUsuario: "",
+                idusuario:0,
+                num_factura: "",
+                idVendedor:0,
+                nombreVendedor:""
+
             },
             created: function () {
 
@@ -237,8 +313,7 @@
                 clienteSeleccionado: function (item) {
 
                     this.nombreCliente = item.nombre;
-                    console.log(item);
-                    idCliente = item.id;
+                    this.idCliente = item.id;
                     $("#MostrarClientesModal").modal('hide');
 
                 },
@@ -271,7 +346,7 @@
                 productoSeleccionado: function (item) {
 
                     var detalle = {
-                        id: item.id,
+                        idproducto: item.id,
                         codigo: item.codigo,
                         nombre: item.nombre,
                         precio_venta: item.precio_venta,
@@ -298,25 +373,74 @@
                     }
 
                     return true;
-                }
-
-
-        /*,
-                mostrarNuevaCategoria: function () {
-                    this.nombre = "";
-                    this.descripcion = "";
-                    $("#NuevaCategoriaModal").modal('show');
                 },
-                guardarNuevaCategoria: function () {
+                // Operaciones con Vendedores
+                seleccionarVendedores: function () {
+                    this.obtenerVendedores();
+                    $("#MostrarVendedoresModal").modal('show');
+                },
+                obtenerVendedores: function () {
                     var vm = this;
-                    var nuevaCategoria = {
-                        nombre: vm.nombre,
-                        descripcion: vm.descripcion
+                    $.ajax({
+                        url: this.Ruta + "/Usuarios",
+                        method: "GET",
+                        dataType: 'JSON'
+                    })
+                        .done(function (resultado) {
+
+                            if (resultado.estado == true) {
+                                vm.vendedores = resultado.info;
+                                toastr.success("Datos cargados satisfactoriamente");
+
+                            }
+                            else
+                                toastr.error(resultado.mensaje);
+
+
+                        });
+
+
+
+                },
+                vendedorSeleccionado: function (item) {
+
+                    this.nombreVendedor = item.nombre;
+                    this.idVendedor = item.id;
+                    $("#MostrarVendedoresModal").modal('hide');
+
+                },
+                guardarVenta: function () {
+                    vm = this;
+                    var listaProductos = [];
+
+                    for (let item of this.detalles) {
+
+                        var prod = {
+                            idproducto: item.idproducto,
+                            cantidad: item.cantidad,
+                            precio: item.precio_venta,
+                            descuento: 0//item.descuento
+                        }
+                        listaProductos.push(prod);
+
                     }
+                    console.log(listaProductos);
+
+
+                    var ventaNueva = {
+                        idcliente : this.idCliente,
+                        idusuario: this.idVendedor,
+                        num_factura: this.num_factura,
+                        total: this.Total,
+                        impuesto: this.IVA,
+                        detalles: listaProductos
+                    }
+                    console.log(ventaNueva);
+
 
                     $.ajax({
-                        url: vm.Ruta + "/Categorias/Nueva",
-                        data: JSON.stringify(nuevaCategoria),
+                        url: vm.Ruta + "/Ventas/Nueva",
+                        data: JSON.stringify(ventaNueva),
                         method: "POST",
                         contentType: 'application/json',
                         dataType: 'JSON'
@@ -324,103 +448,20 @@
                         .done(function (resultado) {
 
                             if (resultado.estado == true) {
-                                  toastr.success("Categoria guardada satisfactoriamente");
-                                $("#NuevaCategoriaModal").modal('hide');
-                                vm.obtenerCategorias();
-
+                                toastr.success("Venta guardada satisfactoriamente");
+                               
+                                
+                                this.detalles = [];
+                                this.nombreCliente = "";
+                                this.nombreVendedor = "";
                             }
                             else
                                 toastr.error(resultado.mensaje);
                         });
-                },
-                mostrarEditarCategoria: function (item) {
-                    this.id = item.id;
-                    this.nombre = item.nombre;
-                    this.descripcion = item.descripcion;
-                    $("#MostrarEditarCategoriaModal").modal('show');
                 }
-                ,
 
-                guardarEditarCategoria: function () {
-                    var vm = this;
-                    var modificaCategoria = {
-                        nombre: vm.nombre,
-                        descripcion: vm.descripcion
-                    }
+            } // fin metodos
 
-                    $.ajax({
-                        url: vm.Ruta+"/Categorias/Actualizar/"+vm.id,
-                        data: JSON.stringify(modificaCategoria),
-                        method: "PUT",
-                        contentType: 'application/json',
-                        dataType: 'JSON'
-                    })
-                        .done(function (resultado) {
-
-                            if (resultado.estado == true) {
-                                toastr.success("Categoria actualizada satisfactoriamente");
-                                $("#MostrarEditarCategoriaModal").modal('hide');
-                                vm.obtenerCategorias();
-
-                            }
-                            else
-                                toastr.error(resultado.mensaje);
-                        });
-
-
-                },
-                Inactivar: function (item) {
-                    var vm = this;
-
-                    $.ajax({
-                        url: vm.Ruta+"/Categorias/Inactivar/"+item.id,
-                        //data: JSON.stringify(nuevaCategoria),
-                        method: "DELETE",
-                        contentType: 'application/json',
-                        dataType: 'JSON'
-                    })
-                        .done(function (resultado) {
-
-                            if (resultado.estado == true) {
-                                toastr.success("Categoria inactivada");
-                                vm.obtenerCategorias();
-
-                            }
-                            else
-                                toastr.error(resultado.mensaje);
-                        });
-                },
-                Activar: function (item) {
-                    var vm = this;
-
-                    $.ajax({
-                        url: vm.Ruta + "/Categorias/Activar/"+ item.id,
-                       // data: JSON.stringify(nuevaCategoria),
-                        method: "DELETE",
-                        contentType: 'application/json',
-                        dataType: 'JSON'
-                    })
-                        .done(function (resultado) {
-
-                            if (resultado.estado == true) {
-                                toastr.success("Categoria activada");
-                                vm.obtenerCategorias();
-
-                            }
-                            else
-                                toastr.error(resultado.mensaje);
-                        });
-                },
-                filtrarCategorias: function () {
-                    if (this.expresion)
-                        this.apiBuscar = "/Categorias/BuscarNombre/" + this.expresion;
-                    else
-                        this.apiBuscar = "/Categorias/Todos";
-
-                    this.obtenerCategorias();
-                }
-                */
-            }
-
-        });</script>
+ }); // fin Vue
+</script>
 }
